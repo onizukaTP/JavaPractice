@@ -2,7 +2,7 @@ package com.javapractice;
 
 public class MyNode<K> implements INode<K>{
     private K key;
-    private INode next;
+    private INode<K> next;
 
     public MyNode(K key) {
         this.key = key;
@@ -20,12 +20,12 @@ public class MyNode<K> implements INode<K>{
     }
 
     @Override
-    public INode getNext() {
+    public INode<K> getNext() {
         return next;
     }
 
     @Override
-    public void setNext(INode next) {
+    public void setNext(INode<K> next) {
         this.next = next;
     }
 }
