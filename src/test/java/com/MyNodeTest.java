@@ -1,6 +1,6 @@
 package com;
 
-import com.javapractice.MyNode;
+import com.javapractice.dsa.MyNode;
 import org.junit.Assert;
 import org.junit.Test;
 

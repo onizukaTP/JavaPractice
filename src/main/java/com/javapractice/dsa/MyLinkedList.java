@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
 public class MyLinkedList<K> {
     private INode<K> head;

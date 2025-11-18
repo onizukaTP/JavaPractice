@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
 public class MyHashMap<K, V> {
     MyLinkedList<K> myLinkedList;

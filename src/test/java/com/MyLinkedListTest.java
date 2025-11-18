@@ -1,7 +1,7 @@
 package com;
 
-import com.javapractice.MyLinkedList;
-import com.javapractice.MyNode;
+import com.javapractice.dsa.MyLinkedList;
+import com.javapractice.dsa.MyNode;
 import org.junit.Assert;
 import org.junit.Test;
 

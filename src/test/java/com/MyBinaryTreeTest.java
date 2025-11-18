@@ -1,6 +1,6 @@
 package com;
 
-import com.javapractice.MyBinaryTree;
+import com.javapractice.dsa.MyBinaryTree;
 import org.junit.Assert;
 import org.junit.Test;
 

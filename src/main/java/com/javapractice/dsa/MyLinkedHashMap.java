@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
 import java.util.ArrayList;
 

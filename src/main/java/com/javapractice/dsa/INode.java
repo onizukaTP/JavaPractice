@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
 public interface INode<K> {
     K getKey();

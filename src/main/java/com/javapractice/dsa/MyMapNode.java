@@ -1,6 +1,6 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
-public class MyMapNode<K, V> implements INode<K>{
+public class MyMapNode<K, V> implements INode<K> {
     K key;
     V value;
     MyMapNode<K, V> next;

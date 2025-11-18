@@ -1,6 +1,6 @@
 package com;
 
-import com.javapractice.MyLinkedHashMap;
+import com.javapractice.dsa.MyLinkedHashMap;
 import org.junit.Assert;
 import org.junit.Test;
 

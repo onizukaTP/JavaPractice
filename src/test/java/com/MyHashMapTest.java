@@ -1,6 +1,6 @@
 package com;
 
-import com.javapractice.MyHashMap;
+import com.javapractice.dsa.MyHashMap;
 import org.junit.Assert;
 import org.junit.Test;
 

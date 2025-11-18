@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
 public class MyBinaryTree<K extends Comparable<K>> {
     MyBinaryNode<K> root;

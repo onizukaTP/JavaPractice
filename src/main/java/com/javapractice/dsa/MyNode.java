@@ -1,6 +1,6 @@
-package com.javapractice;
+package com.javapractice.dsa;
 
-public class MyNode<K> implements INode<K>{
+public class MyNode<K> implements INode<K> {
     private K key;
     private INode<K> next;
 
