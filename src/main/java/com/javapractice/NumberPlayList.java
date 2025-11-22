@@ -3,11 +3,11 @@ package com.javapractice;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 public class NumberPlayList {
     public static void main(String[] args) {
+
         List<Integer> list = new ArrayList<>();
         for (int i = 1; i <= 5; i++) list.add(i);
 
@@ -42,5 +42,11 @@ public class NumberPlayList {
         // Method 5: convert integer to double using Function interface
         Function<Integer, Double> toDouble = Integer::doubleValue;
         list.forEach(n -> System.out.println("To double: " + toDouble.apply(n)));
+
+        Predicate<Integer> divisibleBy2 = n -> n % 2 == 0;
+        Predicate<Integer> divisibleBy3 = n -> n % 3 == 0;
+        List<Integer> lst = List.of(1,2,3,4,5,6,7,8,9,10,11,12,18,21,24);
+        Predicate<Integer> divisibleBy6 = divisibleBy2.and(divisibleBy3);
+        lst.stream().filter(divisibleBy6).forEach(System.out::println);
     }
 }
