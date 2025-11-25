@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.iostream;
 
 public class EmployeePayrollData {
     private int id;

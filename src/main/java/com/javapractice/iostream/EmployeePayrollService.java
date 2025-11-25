@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.iostream;
 
 import java.util.ArrayList;
 import java.util.List;

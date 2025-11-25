@@ -1,11 +1,11 @@
 package com;
 
-import com.javapractice.EmployeePayrollData;
-import com.javapractice.EmployeePayrollService;
+import com.javapractice.iostream.EmployeePayrollData;
+import com.javapractice.iostream.EmployeePayrollService;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Arrays;
-import static com.javapractice.EmployeePayrollService.IOService.*;
+import static com.javapractice.iostream.EmployeePayrollService.IOService.*;
 
 public class EmployeePayrollServiceTest {
     @Test

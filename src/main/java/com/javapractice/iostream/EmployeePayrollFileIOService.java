@@ -1,4 +1,4 @@
-package com.javapractice;
+package com.javapractice.iostream;
 
 import java.io.File;
 import java.io.IOException;

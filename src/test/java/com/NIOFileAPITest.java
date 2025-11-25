@@ -1,6 +1,6 @@
 package com;
 
-import com.javapractice.FileUtils;
+import com.javapractice.iostream.FileUtils;
 import com.javapractice.Java8WatchServiceExample;
 import org.junit.Assert;
 import org.junit.Test;
