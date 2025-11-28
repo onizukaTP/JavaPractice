@@ -15,5 +15,9 @@ public class RideRepository {
     public List<Ride> getRides(int userId) {
         return userRides.get(userId);
     }
+
+    public Map<Integer, List<Ride>> getUserRides() {
+        return userRides;
+    }
 }
 

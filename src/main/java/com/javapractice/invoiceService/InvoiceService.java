@@ -11,6 +11,7 @@ public class InvoiceService {
     }
 
     public InvoiceSummary returnInvoice(int userId) {
+        if (!repository.getUserRides().containsKey(userId)) return null;
         List<Ride> rides = repository.getRides(userId);
         return invoiceGenerator.calculateFare(rides);
     }
