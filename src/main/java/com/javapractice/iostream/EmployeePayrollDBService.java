@@ -7,7 +7,6 @@ import java.util.List;
 
 public class EmployeePayrollDBService {
 
-    private PreparedStatement employeePayrollDataStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
     private EmployeePayrollDBService(){}
 
@@ -15,6 +14,22 @@ public class EmployeePayrollDBService {
         if (employeePayrollDBService == null)
             employeePayrollDBService = new EmployeePayrollDBService();
         return employeePayrollDBService;
+    }
+
+    private List<EmployeePayrollData> getEmployeePayrollData(ResultSet resultSet) {
+        List<EmployeePayrollData> employeePayrollDataList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double salary = resultSet.getDouble("salary");
+                LocalDate startDate = resultSet.getDate("start").toLocalDate();
+                employeePayrollDataList.add(new EmployeePayrollData(id, name, salary, startDate));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return employeePayrollDataList;
     }
 
     private Connection getConnection() throws SQLException {
@@ -56,43 +71,32 @@ public class EmployeePayrollDBService {
         return 0;
     }
 
-    private void prepareStatementForEmployeeData() {
-        try {
-            Connection connection = this.getConnection();
-            String sql = "SELECT * FROM employee_payroll WHERE name = ?";
-            employeePayrollDataStatement = connection.prepareStatement(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public List<EmployeePayrollData> getEmployeePayrollData(String name) {
-        List<EmployeePayrollData> employeePayrollDataList = null;
-        if (this.employeePayrollDataStatement == null)
-            this.prepareStatementForEmployeeData();
-        try {
-            employeePayrollDataStatement.setString(1, name);
-            ResultSet resultSet = employeePayrollDataStatement.executeQuery();
-            employeePayrollDataList = this.getEmployeePayrollData(resultSet);
+        String sql = "SELECT * FROM employee_payroll WHERE name = ?";
+        try (Connection connection = this.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            return getEmployeePayrollData(rs);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return employeePayrollDataList;
     }
 
-    private List<EmployeePayrollData> getEmployeePayrollData(ResultSet resultSet) {
-        List<EmployeePayrollData> employeePayrollDataList = new ArrayList<>();
-        try {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                double salary = resultSet.getDouble("salary");
-                LocalDate startDate = resultSet.getDate("start").toLocalDate();
-                employeePayrollDataList.add(new EmployeePayrollData(id, name, salary, startDate));
-            }
+    public List<EmployeePayrollData> getEmployeePayrollDataBetweenDates(LocalDate start, LocalDate end) {
+        String sql = "SELECT * FROM employee_payroll WHERE start BETWEEN ? AND ?";
+        try (Connection connection = this.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setDate(1, java.sql.Date.valueOf(start));
+            ps.setDate(2, java.sql.Date.valueOf(end));
+            ResultSet rs = ps.executeQuery();
+            return getEmployeePayrollData(rs);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return employeePayrollDataList;
     }
 }

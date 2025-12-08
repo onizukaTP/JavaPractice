@@ -4,6 +4,8 @@ import com.javapractice.iostream.EmployeePayrollData;
 import com.javapractice.iostream.EmployeePayrollService;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,5 +48,14 @@ public class EmployeePayrollServiceTest {
         employeePayrollService.updateEmployeeSalary("sowmya", 1250000.0);
         boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("sowmya");
         Assert.assertTrue(result);
+    }
+
+    @Test
+    public void givenResultOfEmployee_WhenWithInDateRange_ShouldMatchEmployeeCount() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.getEmployeeDataWithinDateRange(
+                LocalDate.of(2025,12,1), LocalDate.of(2025, 12, 31)
+        );
+        Assert.assertEquals(2, employeePayrollData.size());
     }
 }

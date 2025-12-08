@@ -1,13 +1,15 @@
 package com.javapractice.iostream;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
     public List<EmployeePayrollData> employeePayrollDataList;
+
     public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO;}
-    private EmployeePayrollDBService employeePayrollDBService;
+
+    private final EmployeePayrollDBService employeePayrollDBService;
     public EmployeePayrollService() {
         employeePayrollDBService = EmployeePayrollDBService.getInstance();
     }
@@ -15,7 +17,6 @@ public class EmployeePayrollService {
         this();
         this.employeePayrollDataList = employeePayrollDataList;
     }
-
     public void readEmployeeData(Scanner consoleInputScanner) {
         System.out.print("Enter Id: ");
         int id = consoleInputScanner.nextInt();
@@ -63,6 +64,10 @@ public class EmployeePayrollService {
             this.employeePayrollDataList = employeePayrollDBService.readData();
         }
         return this.employeePayrollDataList;
+    }
+
+    public List<EmployeePayrollData> getEmployeeDataWithinDateRange(LocalDate start, LocalDate end) {
+        return employeePayrollDBService.getEmployeePayrollDataBetweenDates(start, end);
     }
 
     public void printData(IOService ioService) {
