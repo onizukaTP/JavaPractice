@@ -5,6 +5,8 @@ import com.javapractice.iostream.EmployeePayrollService;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Arrays;
+import java.util.List;
+
 import static com.javapractice.iostream.EmployeePayrollService.IOService.*;
 
 public class EmployeePayrollServiceTest {
@@ -26,7 +28,23 @@ public class EmployeePayrollServiceTest {
     @Test
     public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-        long entries = employeePayrollService.readEmployeePayrollData(FILE_IO);
+        long entries = employeePayrollService.readEmployeePayrollData(FILE_IO).size();
         Assert.assertEquals(3, entries);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(DB_IO);
+        Assert.assertEquals(2, employeePayrollData.size());
+    }
+
+    @Test
+    public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(DB_IO);
+        employeePayrollService.updateEmployeeSalary("sowmya", 1250000.0);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("sowmya");
+        Assert.assertTrue(result);
     }
 }
