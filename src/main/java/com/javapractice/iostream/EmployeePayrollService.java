@@ -2,6 +2,7 @@ package com.javapractice.iostream;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
@@ -25,6 +26,11 @@ public class EmployeePayrollService {
         System.out.print("Enter salary: ");
         double salary = consoleInputScanner.nextDouble();
         employeePayrollDataList.add(new EmployeePayrollData(id, name, salary));
+    }
+
+    public void addEmployeePayrollData(IOService ioService, String name, String gender, double salary, LocalDate startDate) {
+        if (ioService.equals(IOService.DB_IO))
+            employeePayrollDBService.addEmployeePayrollData(name, gender, salary, startDate);
     }
 
     public void updateEmployeeSalary(String name, double salary) {
@@ -66,8 +72,16 @@ public class EmployeePayrollService {
         return this.employeePayrollDataList;
     }
 
-    public List<EmployeePayrollData> getEmployeeDataWithinDateRange(LocalDate start, LocalDate end) {
-        return employeePayrollDBService.getEmployeePayrollDataBetweenDates(start, end);
+    public List<EmployeePayrollData> getEmployeeDataWithinDateRange(IOService ioService, LocalDate start, LocalDate end) {
+        if (ioService.equals(IOService.DB_IO))
+            return employeePayrollDBService.getEmployeePayrollDataBetweenDates(start, end);
+        return null;
+    }
+
+    public Map<String, Double> readAverageSalaryByGender(IOService ioService) {
+        if (ioService.equals(IOService.DB_IO))
+            return employeePayrollDBService.getAverageSalaryByGender();
+        return null;
     }
 
     public void printData(IOService ioService) {

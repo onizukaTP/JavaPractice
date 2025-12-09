@@ -3,7 +3,9 @@ package com.javapractice.iostream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeePayrollDBService {
 
@@ -45,6 +47,10 @@ public class EmployeePayrollDBService {
 
     public List<EmployeePayrollData> readData() {
         String sql = "SELECT * FROM employee_payroll";
+        return this.getEmployeePayrollDataUsingDB(sql);
+    }
+
+    private List<EmployeePayrollData> getEmployeePayrollDataUsingDB(String sql) {
         List<EmployeePayrollData> employeePayrollDataList = new ArrayList<>();
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
@@ -99,4 +105,40 @@ public class EmployeePayrollDBService {
             throw new RuntimeException(e);
         }
     }
+
+    public Map<String, Double> getAverageSalaryByGender() {
+        String sql = "SELECT gender, AVG(salary) as avg_salary FROM employee_payroll GROUP BY gender;";
+        Map<String, Double> genderToAvgSalaryMap = new HashMap<>();
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String gender = resultSet.getString("gender");
+                Double salary = resultSet.getDouble("avg_salary");
+                genderToAvgSalaryMap.put(gender, salary);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return genderToAvgSalaryMap;
+    }
+
+    public void addEmployeePayrollData(String name, String gender, double salary, LocalDate startDate) {
+        String sql = "INSERT INTO employee_payroll (name, gender, salary, start) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, gender);
+            ps.setDouble(3, salary);
+            ps.setDate(4, java.sql.Date.valueOf(startDate));
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

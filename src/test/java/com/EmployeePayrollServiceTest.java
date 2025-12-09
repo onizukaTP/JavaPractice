@@ -8,8 +8,11 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.javapractice.iostream.EmployeePayrollService.IOService.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EmployeePayrollServiceTest {
     @Test
@@ -24,21 +27,21 @@ public class EmployeePayrollServiceTest {
         employeePayrollService.writeEmployeePayrollData(FILE_IO);
         employeePayrollService.printData(FILE_IO);
         long entries = employeePayrollService.countEntries(FILE_IO);
-        Assert.assertEquals(3, entries);
+        assertEquals(3, entries);
     }
 
     @Test
     public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         long entries = employeePayrollService.readEmployeePayrollData(FILE_IO).size();
-        Assert.assertEquals(3, entries);
+        assertEquals(3, entries);
     }
 
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(DB_IO);
-        Assert.assertEquals(2, employeePayrollData.size());
+        assertEquals(2, employeePayrollData.size());
     }
 
     @Test
@@ -54,8 +57,42 @@ public class EmployeePayrollServiceTest {
     public void givenResultOfEmployee_WhenWithInDateRange_ShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData = employeePayrollService.getEmployeeDataWithinDateRange(
+                DB_IO,
                 LocalDate.of(2025,12,1), LocalDate.of(2025, 12, 31)
         );
-        Assert.assertEquals(2, employeePayrollData.size());
+        assertEquals(2, employeePayrollData.size());
     }
+
+    @Test
+    public void givenPayrollData_WhenAverageSalaryRetrievedByGender_ShouldReturnProperValue() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollData(DB_IO);
+        Map<String, Double> averageSalaryByGender = employeePayrollService.readAverageSalaryByGender(DB_IO);
+        Assert.assertTrue(averageSalaryByGender.get("M").equals(1000000.00) &&
+                averageSalaryByGender.get("F").equals(1375000.00));
+    }
+
+    @Test
+    public void givenPayrollData_WhenAdded_ShouldReflectInDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+
+        List<EmployeePayrollData> beforeList = employeePayrollService.readEmployeePayrollData(DB_IO);
+        int sizeBefore = beforeList.size();
+
+        employeePayrollService.addEmployeePayrollData(
+                DB_IO,
+                "vimal",
+                "M",
+                1100000.00,
+                LocalDate.of(2025, 12, 3)
+        );
+
+        List<EmployeePayrollData> afterList = employeePayrollService.readEmployeePayrollData(DB_IO);
+
+        boolean found = afterList.stream()
+                .anyMatch(e ->
+                        e.getName().equalsIgnoreCase("vimal"));
+        assertTrue(found);
+    }
+
 }
