@@ -39,15 +39,14 @@ public class EmployeePayrollData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EmployeePayrollData that = (EmployeePayrollData) o;
-        return id == that.id
-                && Double.compare(salary, that.salary) == 0
+        return Double.compare(salary, that.salary) == 0
                 && Objects.equals(name, that.name)
                 && Objects.equals(startDate, that.startDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, salary, startDate);
+        return Objects.hash(name, salary, startDate);
     }
 
     public int getId() {

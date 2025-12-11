@@ -66,6 +66,24 @@ public class EmployeePayrollDBService {
         return this.updateEmployeeDataUsingPreparedStatement(name, salary);
     }
 
+    public void addEmployeePayrollDataUC7(String name, String gender, double salary, LocalDate startDate) {
+        String sql = "INSERT INTO employee_payroll (name, gender, salary, start) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, gender);
+            ps.setDouble(3, salary);
+            ps.setDate(4, java.sql.Date.valueOf(startDate));
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
         String sql = String.format("update employee_payroll set salary = %.2f where name = '%s';", salary, name);
         try (Connection connection = this.getConnection()){
@@ -123,22 +141,68 @@ public class EmployeePayrollDBService {
         return genderToAvgSalaryMap;
     }
 
-    public void addEmployeePayrollData(String name, String gender, double salary, LocalDate startDate) {
-        String sql = "INSERT INTO employee_payroll (name, gender, salary, start) VALUES (?, ?, ?, ?)";
-
-        try (Connection connection = this.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ps.setString(1, name);
-            ps.setString(2, gender);
-            ps.setDouble(3, salary);
-            ps.setDate(4, java.sql.Date.valueOf(startDate));
-
-            ps.executeUpdate();
-
+    public EmployeePayrollData addEmployeePayrollData(String name, String gender,
+                                       double salary, LocalDate startDate) {
+        int employeeId = -1;
+        Connection connection = null;
+        EmployeePayrollData employeePayrollData = null;
+        try {
+            connection = this.getConnection();
+            connection.setAutoCommit(false);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
 
+        try (Statement statement = connection.createStatement()){
+            String sql = String.format("INSERT INTO employee_payroll " +
+                    "(name, gender, salary, start) VALUES ('%s', '%s', %s, '%s')",
+                    name, gender, salary, Date.valueOf(startDate));
+            int rowAffected = statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+            if (rowAffected == 1) {
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) employeeId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+                return employeePayrollData;
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        try (Statement statement = connection.createStatement()) {
+            double deductions = salary * 0.2;
+            double taxable_pay = salary - deductions;
+            double tax = taxable_pay * 0.1;
+            double net_pay = salary - tax;
+            String sql = String.format("INSERT INTO payroll_details " +
+                    "(employee_id, basic_pay, deductions, taxable_pay, tax, net_pay) VALUES " +
+                    "(%s, %s, %s, %s, %s, %s)", employeeId, salary, deductions, taxable_pay, tax, net_pay);
+            int rowAffected = statement.executeUpdate(sql);
+            if (rowAffected == 1) {
+                employeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate);
+            }
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+                return  employeePayrollData;
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } try {
+            connection.commit();
+        }  catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return employeePayrollData;
+    }
 }

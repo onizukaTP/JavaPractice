@@ -75,24 +75,16 @@ public class EmployeePayrollServiceTest {
     @Test
     public void givenPayrollData_WhenAdded_ShouldReflectInDB() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-
-        List<EmployeePayrollData> beforeList = employeePayrollService.readEmployeePayrollData(DB_IO);
-        int sizeBefore = beforeList.size();
-
         employeePayrollService.addEmployeePayrollData(
                 DB_IO,
-                "vimal",
+                "kumar",
                 "M",
-                1100000.00,
-                LocalDate.of(2025, 12, 3)
+                1150000.00,
+                LocalDate.of(2025, 12, 4)
         );
-
-        List<EmployeePayrollData> afterList = employeePayrollService.readEmployeePayrollData(DB_IO);
-
-        boolean found = afterList.stream()
-                .anyMatch(e ->
-                        e.getName().equalsIgnoreCase("vimal"));
-        assertTrue(found);
+        employeePayrollService.readEmployeePayrollData(DB_IO);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("kumar");
+        Assert.assertTrue(result);
     }
 
 }

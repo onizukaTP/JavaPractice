@@ -96,7 +96,20 @@ public class EmployeePayrollService {
     }
 
     public boolean checkEmployeePayrollInSyncWithDB(String name) {
-        List<EmployeePayrollData> employeePayrollList = employeePayrollDBService.getEmployeePayrollData(name);
-        return employeePayrollList.get(0).equals(getEmployeePayrollData(name));
+        List<EmployeePayrollData> employeePayrollListFromDB =
+                employeePayrollDBService.getEmployeePayrollData(name);
+        if (employeePayrollListFromDB.isEmpty()) {
+            return false;
+        }
+        EmployeePayrollData dbEmp = employeePayrollListFromDB.get(0);
+
+        EmployeePayrollData localEmp = this.employeePayrollDataList.stream()
+                .filter(emp -> emp.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+
+        if (localEmp == null) return false;
+
+        return dbEmp.equals(localEmp);
     }
 }
